@@ -331,7 +331,8 @@
                 areaLists:areaList,
                 files:{},
                 Product:[],
-                Head:[]
+                Head:[],
+                buyUrl:''
             }
         },
         mounted(){
@@ -339,7 +340,7 @@
             this.nowData.Id=this.$route.params.index;
             this.getOpenIdUser()
             if(this.$api.is_weixn()){//微信端获取用户
-                this.getCode();
+                // this.getCode();
             }
            
         },
@@ -358,7 +359,19 @@
                         let titleInfo=res.data.Data.Message;
                         if(titleInfo==0){
                             //需要填写信息
-
+                            if(res.data.Data.user){//已填写过信息
+                                Dialog.alert({
+                                    message: "未付款",
+                                    theme: 'round-button',
+                                    confirmButtonText:'立即付款'
+                                    }).then(() => {
+                                        window.location.href=res.data.Data.url;
+                                    //    that.getList() 
+                                });
+                            }else{//当前没填写信息
+                                 
+                            }
+                            that.buyUrl=res.data.Data.url;
                         }else if(titleInfo==1){
                             //制定方案中
                            that.$router.push({name:'scheme', params:{ id: that.nowData.Openid}}) 
@@ -464,7 +477,7 @@
                             theme: 'round-button',
                             confirmButtonText:'立即付款'
                         }).then(() => {
-                            window.location.href='https://shop43949025.youzan.com/wscshop/shopnote/detail?noteAlias=sFz1BjvMcY&reft=1615124783251&spm=shopnote.1632480&sf=wx_sm'
+                            window.location.href=that.buyUrl;
                         });
                     }else{
                         //错误
@@ -688,7 +701,4 @@
             margin-bottom: 0.08rem;
         }
     }
-   
-    
-    // 
 </style>

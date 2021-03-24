@@ -10,14 +10,24 @@
             </template>
         </van-field>
         <!-- <h2 class="van-doc-demo-block__title">反馈内容</h2> -->
+        <van-field name="radio" label="反馈感受">
+            <template #input>
+                <van-radio-group v-model="nowData.Feedbackstate" direction="horizontal">
+                    <van-radio class="margin-b" name="偏干">偏干</van-radio>
+                    <van-radio class="margin-b" name="偏油">偏油</van-radio>
+                    <van-radio class="margin-b" name="又干又油">又干又油</van-radio>
+                    <van-radio class="margin-b" name="不干不油">不干不油</van-radio>
+                </van-radio-group>
+            </template>
+        </van-field>
         <div>
             <van-field
                 v-model="nowData.Feedbacktxt"
                 type="textarea"
                 autosize
                 max-height='200'
-                label="反馈感受"
-                placeholder="请填写您的反馈感受！"
+                label="反馈内容"
+                placeholder="请填写您的反馈内容！"
             />
         </div>
          <h2 class="van-doc-demo-block__title" v-if="proList.length>0">产品是否使用完</h2>
@@ -46,15 +56,14 @@
         data(){
             return{
                 nowData:{
-                    "Feedbacktxt":''
+                    "Feedbacktxt":'',
+                    "Feedbackstate":''
                 },
                 proList:[],
 
             }
         },
         mounted(){
-            
-            console.log(this.$route.params.id)
              this.getFeedback()
             // Toast.loading({
             //     message: '加载中...',
@@ -87,7 +96,7 @@
                             // that.getFeedback()   
                         });
                     }
-                    console.log(nowd)
+                    // console.log(nowd)
                 }).catch((error) => {
                     console.error(error);
                 })   
@@ -115,6 +124,7 @@
                     console.log(res)
                 })
             },
+            //提交反馈
             commit(){
                 this.lbImgU();
                 let that=this;
@@ -123,17 +133,23 @@
                     "Programid": this.$route.params.id,
                     "Feedbacktime":'',
                     "Feedbacktxt": this.nowData.Feedbacktxt,
+                    "Feedbackstate":this.nowData.Feedbackstate,
                     "Head": "",
                     "Profile": "",
                     "Partial": "",
                     "FbpList": []
                 }
+                
                 for(let i=0;i<this.proList.length;i++){
                      parsem.FbpList.push({"Id":0,"Feedbackid":0,"Productid":this.proList[i].Id,"Finished":this.proList[i].Usage})
                     // parsem.FbpList[i].Id=0
                     // parsem.FbpList[i].Feedbackid=0
                     // parsem.FbpList[i].Productid=this.proList[i].Id
                     // parsem.FbpList[i].Finished=this.proList[i].Usage
+                }
+                if(parsem.Feedbackstate==''){
+                    this.$api.tip('请先选择反馈感受！')
+                    return false;
                 }
                 if(parsem.Feedbacktxt==''){
                     this.$api.tip('请先填写反馈内容！')
@@ -169,6 +185,9 @@
          overflow:auto;
          .van-nav-bar .van-icon{
              color: #fff
+         }
+         .margin-b{
+             margin-bottom: 10px
          }
      }
 </style>

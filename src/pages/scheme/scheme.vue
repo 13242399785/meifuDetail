@@ -115,7 +115,7 @@
                 <p>【是否会干燥】&nbsp; {{nowData.user.Dry?'否':'是'}}</p>
                 <p>【是否出油】&nbsp; {{nowData.user.Oil?'否':'是'}}</p>
                 <p>【是否长痘】&nbsp; {{nowData.user.Acne?'否':'是'}}</p>
-                <p>【症状发作一次】&nbsp; {{nowData.user.Symptom}}</p>
+                <p>【症状多久发作一次】&nbsp; {{nowData.user.Symptom}}</p>
                 <p>【皮肤问题几年了】&nbsp; {{nowData.user.Skinproblems}}</p>
                 <p>【是否去医院诊断,诊断结论】&nbsp; {{nowData.user.Diagnosis}}</p>
                 <p>【期间用过药物，使用多久，效果】&nbsp; {{nowData.user.Useddrug}}</p>
@@ -132,10 +132,10 @@
                 <p>【是否使用彩妆】 &nbsp; {{nowData.user.Makeup?'否':'是'}}</p>
                 <p>【是否使用防晒】 &nbsp; {{nowData.user.Sunprotection?'否':'是'}}</p>
                 <p>【其他】&nbsp; {{nowData.user.Remarks}}</p>
-                <img v-for="(item,index) in nowData.user.HeadList" :key="index" :src="$api.serverUrl+'/'+item" alt="">
-                <img v-for="(item,index) in nowData.user.Profile" :key="index" :src="$api.serverUrl+'/'+item" alt="">
-                <img v-for="(item,index) in nowData.user.Partial" :key="index" :src="$api.serverUrl+'/'+item" alt="">
-                <img v-for="(item,index) in nowData.user.Product" :key="index" :src="$api.serverUrl+'/'+item" alt="">
+                <img v-for="(item,index) in nowData.user.HeadList" :key="index" :src="$api.serverUrl+item" alt="">
+                <img v-for="(item,index) in nowData.user.Profile" :key="index" :src="$api.serverUrl+item" alt="">
+                <img v-for="(item,index) in nowData.user.Partial" :key="index" :src="$api.serverUrl+item" alt="">
+                <img v-for="(item,index) in nowData.user.Product" :key="index" :src="$api.serverUrl+item" alt="">
                 
             </div>
         </div>
@@ -229,8 +229,17 @@
                             //     theme: 'round-button',
                             //     }).then(() => {
                             //         console.log(res.data.Data)
-                            if(res.data.Data.user){
-                                that.$router.push({name:'info', params:{ id: that.nowOpenid,index:0||res.data.Data.user.Id }})  
+                            if(res.data.Data.user){//已填写过信息
+                                // that.$router.push({name:'info', params:{ id: that.nowOpenid,index:0||res.data.Data.user.Id }})  
+                                that.footerShow=false;
+                                Dialog.alert({
+                                    message: "未付款",
+                                    theme: 'round-button',
+                                    confirmButtonText:'立即付款'
+                                    }).then(() => {
+                                        window.location.href=res.data.Data.url;
+                                    //    that.getList() 
+                                });
                             }else{
                                 that.$router.push({name:'info', params:{ id: that.nowOpenid,index:0 }})  
                             }
@@ -245,7 +254,7 @@
                                 theme: 'round-button',
                                 confirmButtonText:'立即付款'
                                 }).then(() => {
-                                    window.location.href='https://shop43949025.youzan.com/wscshop/shopnote/detail?noteAlias=sFz1BjvMcY&reft=1615124783251&spm=shopnote.1632480&sf=wx_sm' 
+                                    window.location.href=res.data.Data.url;
                                 //    that.getList() 
                             });
                         }else if(titleInfo==2){

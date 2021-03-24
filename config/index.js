@@ -12,7 +12,7 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/apis': { 
-        target: 'http://7.28.167.203:666',
+        target: 'http://www.junmi.xyz',
         changeOrigin: true,
         pathRewrite: {
             '^/apis': ''
@@ -21,7 +21,7 @@ module.exports = {
     },
     
     // Various Dev Server settings
-    host: '192.168.1.104', // can be overwritten by process.env.HOST
+    host: '192.168.5.147', // can be overwritten by process.env.HOST
     port: 7777, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: false,
     errorOverlay: true,

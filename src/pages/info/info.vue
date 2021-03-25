@@ -340,7 +340,7 @@
             this.nowData.Id=this.$route.params.index;
             this.getOpenIdUser()
             if(this.$api.is_weixn()){//微信端获取用户
-                // this.getCode();
+                this.getCode();
             }
            
         },

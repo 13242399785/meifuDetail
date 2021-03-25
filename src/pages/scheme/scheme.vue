@@ -77,7 +77,7 @@
                 <br/>
                 <div class="scheme-item-t">{{nowData.program.ZYSXtitle}}</div>
                 <div class="mar-list">
-                    <p v-for="(item,index) in nowData.program.Precautionslist" :key="index">{{item.Precautions1}}</p>
+                    <p v-for="(item,index) in nowData.program.Precautionslist" :key="index">{{item.Precautions}}</p>
                 </div>
             </div>
             
@@ -96,7 +96,10 @@
                 <br/>
                 <div class="scheme-item-t">{{nowData.program.XFYQtitle}}</div>
                 <div class="mar-list">
-                    <p v-for="(item,index) in nowData.program.Expectedlist" :key="index">{{item.Expected1}}</p>
+                    <div v-for="(item,index) in nowData.program.Expectedlist" :key="index">
+                        <p v-if="index<(nowData.program.Expectedlist.length-1)" >{{item.Expected}}</p>
+                        <img v-if="index==(nowData.program.Expectedlist.length-1)" alt="" :src="$api.serverUrl+item.Expected">
+                    </div>
                     <!-- <img src="http://www.ruanyifeng.com/blogimg/asset/201402/bg2014021402.png" alt=""> -->
                 </div>
             </div>

@@ -375,19 +375,14 @@
                                  
                             }
                             that.buyUrl=res.data.Data.url;
-                        }else if(titleInfo==1){
-                            //制定方案中
-                           that.$router.push({name:'scheme', params:{ id: that.nowData.Openid}}) 
-                        }else if(titleInfo==2){
-                            //方案显示
+                        }else{
+                            //跳转方案页面判断
                             that.$router.push({name:'scheme', params:{ id: that.nowData.Openid}})
                         }
                     }else{
                         //没有用户
                         that.$router.push({name:'scheme', params:{ id: that.nowData.Openid}})
                     }
-                    
-
                 }).catch((error) => {
                     console.error(error);
                 })
@@ -537,8 +532,6 @@
             },
             // 组件方法 获取 流
             afterRead(file) {
-                console.log(file)
-                console.log(this.nowData.Head)
                 this.files.name = file.file.name // 获取文件名
                 this.files.type = file.file.type // 获取类型
                 // this.imgPreview(file.file)
@@ -553,7 +546,6 @@
                 } else {
                     fd.append("files", e.file)
                 }
-                console.log(fd)
             },
             // 处理图片
             imgPreview(file) {
@@ -597,7 +589,6 @@
                 //如果图片大于四百万像素，计算压缩比并将大小压至400万以下
                 let ratio
                 if ((ratio = (width * height) / 4000000) > 1) {
-                    // console.log("大于400万像素");
                     ratio = Math.sqrt(ratio)
                     width /= ratio
                     height /= ratio

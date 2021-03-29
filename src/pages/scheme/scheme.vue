@@ -183,10 +183,8 @@
         mounted(){
             var url=window.location.href,
 			indexNow=url.indexOf('=');
-			// this.nowOpenid=url.slice(indexNow+1,url.length)
             this.nowOpenid=this.$route.params.id
             this.getList();
-            // console.log(JSON.parse(localStorage.getItem("nowUserDt")))
         },
         methods:{
             toArray(str){
@@ -218,11 +216,6 @@
                         if(titleInfo==0){
                             // 填写信息
                             that.footerShow=false;
-                            // Dialog.alert({
-                            //     message: "请先填写信息！",
-                            //     theme: 'round-button',
-                            //     }).then(() => {
-                            //         console.log(res.data.Data)
                             if(res.data.Data.user){//已填写过信息
                                 // that.$router.push({name:'info', params:{ id: that.nowOpenid,index:0||res.data.Data.user.Id }})  
                                 that.footerShow=false;
@@ -237,11 +230,8 @@
                             }else{
                                 that.$router.push({name:'info', params:{ id: that.nowOpenid,index:0 }})  
                             }
-                                    
-                                
-                            // });
                         }else if(titleInfo==1){
-                            //制定
+                            //已填写信息未付款
                             that.footerShow=false;
                               Dialog.alert({
                                 message: "未付款",
@@ -252,10 +242,19 @@
                                 //    that.getList() 
                             });
                         }else if(titleInfo==2){
-                            //
+                            //显示方案
                             that.footerShow=true;
                             that.nowData=res.data.Data
                             that.programId=res.data.Data.program.Id
+                        }else if(titleInfo==3){//已付款方案制定中
+                            that.footerShow=false;
+                            Dialog.alert({
+                                message: "方案制定中...",
+                                theme: 'round-button',
+                                confirmButtonText:'确定'
+                                }).then(() => {
+                                   that.getList() 
+                            });
                         }
                     }else{
                         //错误
@@ -268,8 +267,6 @@
                             that.getList()
                         });
                     }
-                    
-
                 }).catch((error) => {
                     console.error(error);
                 })

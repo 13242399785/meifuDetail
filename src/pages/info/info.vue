@@ -12,6 +12,7 @@
         <van-field
             name="呢称"
             label="呢称"
+            :disabled='nameDisa'
             v-model="nowData.WXName"
         />
         <!-- 性别 -->
@@ -244,22 +245,22 @@
         <h2 class="van-doc-demo-block__title">当前状况</h2>
         <van-field name="uploader" label="脸部图片">
             <template #input>
-                <van-uploader multiple='true' :after-read="afterRead"  v-model="Head"  accept="image"/>
+                <van-uploader multiple='true' :after-read="afterRead"  v-model="Head"  accept="image/*"/>
             </template>
         </van-field>
         <!-- <van-field name="uploader" label="侧脸图片">
             <template #input>
-                <van-uploader v-model="nowData.Profile" />
+                <van-uploader v-model="nowData.Profile" accept="image/*"/>
             </template>
         </van-field>
         <van-field name="uploader" label="脸部局部图片">
             <template #input>
-                <van-uploader v-model="nowData.Partial" />
+                <van-uploader v-model="nowData.Partial" accept="image/*"/>
             </template>
         </van-field> -->
         <van-field name="uploader" label="当前产品图片">
             <template #input>
-                <van-uploader preview-full-image='false'  accept="image"  v-model="Product"  />
+                <van-uploader preview-full-image='false'   v-model="Product"  accept="image/*" />
             </template>
         </van-field>
         
@@ -332,7 +333,8 @@
                 files:{},
                 Product:[],
                 Head:[],
-                buyUrl:''
+                buyUrl:'',
+                nameDisa:false
             }
         },
         mounted(){
@@ -341,6 +343,7 @@
             this.getOpenIdUser()
             if(this.$api.is_weixn()){//微信端获取用户
                 this.getCode();
+                this.nameDisa=true
             }
            
         },

@@ -6,7 +6,7 @@
         <!-- <h2 class="van-doc-demo-block__title">当前产品使用状况</h2> -->
         <van-field name="uploader" label="脸部图片">
             <template #input>
-                <van-uploader multiple='true' :after-read="afterRead"  v-model="nowData.Head"  accept="image" />
+                <van-uploader multiple='true' :after-read="afterRead"  v-model="nowData.Head"  accept="image/*" />
             </template>
         </van-field>
         <!-- <h2 class="van-doc-demo-block__title">反馈内容</h2> -->

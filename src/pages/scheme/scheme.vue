@@ -7,8 +7,8 @@
             <div class="buy-list border-list border-bottom-none">
                 <h4>{{nowData.program.HFPtitle1}}</h4>
                 <div class="buy-item" v-for="(item,index) in nowData.program.ProductList" :key="index">
-                    <p class="buy-detail-w">【<span class="buy-detail">{{item.Typename}}</span>】{{item.Productname}}， <span class="buy-prise">129-150</span> 元</p>
-                    <p class="buy-wapper"><span target="_blank"  class="buy-btn" @click="goUrl(item.BuyURL)">点击购买 >></span></p>
+                    <p class="buy-detail-w">【<span class="buy-detail">{{item.Typename}}</span>】{{item.Productname}}， <span class="buy-prise">官网售价{{item.Externalprice}}</span> 元</p>
+                    <p class="buy-wapper"><span v-if="item.Price">拼团{{item.Price}}元</span>，<span target="_blank"  class="buy-btn" @click="goUrl(item.BuyURL)">点击购买 >></span></p>
                 </div>
             </div>
             <!-- <div class="buy-list-detail">
@@ -201,17 +201,8 @@
             //跳转地址
             goUrl(url){
                 setTimeout(function(){
-
                     window.location.href=url
                 },100)
-                
-                // window.open(url,"_blank");
-                // var p = window.location.protocol;
-                // var a = document.createElement("a");
-                // a.setAttribute("href", `${p}//www.baidu.com`);
-                // a.setAttribute("target", "_blank");
-                // a.click();
-                // document.getElementsByTagName("body")[0].appendChild(a);
             },
             getList(){
                 let params={

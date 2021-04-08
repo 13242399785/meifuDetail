@@ -49,15 +49,6 @@
             :rules="[{ required: true, message: '请填写职业名称' }]"
         />
         <h2 class="van-doc-demo-block__title">皮肤状况</h2>
-        <!-- 是否使用彩妆 -->
-        <van-field name="radio" label="是否使用彩妆">
-            <template #input>
-                <van-radio-group v-model="nowData.Makeup" direction="horizontal">
-                <van-radio name="0">是</van-radio>
-                <van-radio name="1">否</van-radio>
-                </van-radio-group>
-            </template>
-        </van-field>
         <!-- 是否使用防晒 -->
         <van-field name="radio" label="是否使用防晒">
             <template #input>
@@ -67,6 +58,15 @@
                 </van-radio-group>
             </template>
         </van-field>
+        <!-- 是否使用彩妆 -->
+        <van-field name="radio" label="是否使用彩妆">
+            <template #input>
+                <van-radio-group v-model="nowData.Makeup" direction="horizontal">
+                <van-radio name="0">是</van-radio>
+                <van-radio name="1">否</van-radio>
+                </van-radio-group>
+            </template>
+        </van-field> 
         <!-- 是否发红 -->
         <van-field name="radio" label="是否发红">
             <template #input>
@@ -245,25 +245,25 @@
         <h2 class="van-doc-demo-block__title">当前状况</h2>
         <van-field name="uploader" label="脸部图片">
             <template #input>
-                <van-uploader multiple='true' :after-read="afterRead"  v-model="Head"  accept="image/*"/>
+                <van-uploader multiple='true'  v-model="Head"  accept="image/*"/>
             </template>
         </van-field>
         <!-- <van-field name="uploader" label="侧脸图片">
             <template #input>
-                <van-uploader v-model="nowData.Profile" accept="image/*"/>
+                <van-uploader v-model="nowData.Profile" :after-read="afterRead"  accept="image/*"/>
             </template>
         </van-field>
         <van-field name="uploader" label="脸部局部图片">
             <template #input>
-                <van-uploader v-model="nowData.Partial" accept="image/*"/>
+                <van-uploader preview-full-image='false' v-model="nowData.Partial" accept="image/*"/>
             </template>
         </van-field> -->
         <van-field name="uploader" label="当前产品图片">
             <template #input>
-                <van-uploader preview-full-image='false'   v-model="Product"  accept="image/*" />
+                <van-uploader  multiple='true'  v-model="Product"  accept="image/*" />
             </template>
         </van-field>
-        
+        <!-- <van-button round block type="info" @click="uploadImgs">上传图片</van-button> -->
         <!-- 备注其他 -->
         <h2 class="van-doc-demo-block__title">其他信息</h2>
         <div style="line-height:24px;">
@@ -281,6 +281,9 @@
         </van-popup>
         <div class="btn-commit">
             <van-button round block type="info" @click="commit">提交</van-button>
+        </div>
+        <div class="load-wapper" v-if="loadShow">
+            <van-loading size="24px" color="#fff" >加载中...</van-loading>
         </div>
     </div>
 </template>
@@ -334,7 +337,12 @@
                 Product:[],
                 Head:[],
                 buyUrl:'',
-                nameDisa:false
+                nameDisa:false,
+                ProductList:[],
+                HeadList:[],
+                lbformData:new window.FormData(),
+                cpformData:new window.FormData(),
+                loadShow:false
             }
         },
         mounted(){
@@ -430,9 +438,12 @@
             //提交事件
             commit(){
                 let that=this;
-                // that.$router.push({name:'scheme', params:{ id:that.nowData.Openid }})  
-                this.lbImgU();
-                this.cpImgU();
+                //初始化照片
+                this.ProductList=[]
+                this.HeadList=[]
+                this.lbformData=new window.FormData()
+                this.cpformData=new window.FormData()
+                
                 // this.uploadFiles(this.nowData.Head[0].file)
                 if(this.nowData.WXName==null){
                     this.$api.tip('请先填写称呼！')
@@ -467,8 +478,12 @@
                 }else{
                     this.nowData.Gynecology='0'
                 }
-
+                //上传图片
+                this.lbImgU();
+                this.cpImgU();
+                this.loadShow=true
                 this.$api.updateUser(this.nowData).then(res=>{
+                    that.loadShow=false
                     if(res.data.Code==0){
                         Dialog.alert({
                             message: "信息填写成功！",
@@ -487,39 +502,9 @@
                         });
                     }
                 }).catch((error) => {
+                    that.loadShow=false
                     console.error(error);
                 })     
-                //添加信息接口
-                // if(this.nowData.Id==0){
-                //     this.$api.addUser(this.nowData).then(res=>{
-                //         if(res.data.Code==0){
-                //             // that.$api.tip(res.data.Message) 
-                //             //   this.
-                //              Dialog.alert({
-                //                 message: "信息填写成功！",
-                //                 theme: 'round-button',
-                //                 }).then(() => {
-                //                     // on close
-                //                      window.location.href='https://shop43949025.youzan.com/wscshop/shopnote/detail?noteAlias=sFz1BjvMcY&reft=1615124783251&spm=shopnote.1632480&sf=wx_sm'
-                //             });
-                //             // that.$router.push({name:'scheme', params:{ id: that.nowData.Openid }})  
-                           
-                //         }else{
-                //             //错误
-                //             Dialog.alert({
-                //                 message: res.data.Msg,
-                //                 theme: 'round-button',
-                //                 }).then(() => {
-                //                     // on close
-                //             });
-                //         }
-                //     }).catch((error) => {
-                //         console.error(error);
-                //     }) 
-                // }else{//修改
-                    
-                // }
-                
             },
             //获取城市
             chooseArea(e){
@@ -532,23 +517,29 @@
             },
             // 组件方法 获取 流
             afterRead(file) {
-                this.files.name = file.file.name // 获取文件名
-                this.files.type = file.file.type // 获取类型
+                this.files.name = file.name // 获取文件名
+                this.files.type = file.type // 获取类型
                 // this.imgPreview(file.file)
             },
             //多图上传
-            otherUp(){
+            uploadImgs(){
                 let e=this.Head;
-                if (e instanceof Array && e.length) { // 判断是否是多图上传 多图则循环添加进去
-                    e.forEach(item => {
-                        fd.append("files", item.file)//第一个参数字符串可以填任意命名，第二个根据对象属性来找到file
-                    })
-                } else {
-                    fd.append("files", e.file)
+                let formData = new window.FormData()
+                if(this.Head.length==0){
+                    return false;
                 }
+                for(let i=0;i<this.Head.length;i++){
+                    let img=this.imgPreview(this.Head[i].file)
+                    console.log(this.Head[i].file)
+                    // formData.append('files', this.Head[i].file)
+                    console.log(img)
+                }
+                // this.uploadImg(formData,"lb")
+                
             },
             // 处理图片
-            imgPreview(file) {
+            imgPreview(file,photoType) {
+                console.log(file)
                 let self = this
                 // 看支持不支持FileReader
                 if (!file || !window.FileReader) return
@@ -562,15 +553,15 @@
                     let result = this.result
                     let img = new Image()
                     img.src = result
-                    //判断图片是否大于500K,是就直接上传，反之压缩图片
-                    if (this.result.length <= 500 * 1024) {
+                    //判断图片是否大于1000K,不是就直接上传，反之压缩图片
+                    if (this.result.length <= 1000 * 1024) {
                         // 上传图片
-                        self.postImg(this.result);
+                        self.postImg(this.result,photoType,file.name);
                     } else {
-                            img.onload = function() {
+                        img.onload = function() {
                             let data = self.compress(img)
                             // 上传图片
-                            self.postImg(data);
+                           self.postImg(data,photoType,file.name);
                         }
                     }
                     }
@@ -626,7 +617,7 @@
             },
             
             //将base64转换为文件
-            dataURLtoFile(dataurl) {
+            dataURLtoFile(dataurl,fileName) {
                 var arr = dataurl.split(','),
                     bstr = atob(arr[1]),
                     n = bstr.length,
@@ -634,19 +625,34 @@
                 while (n--) {
                     u8arr[n] = bstr.charCodeAt(n)
                 }
-                return new File([u8arr], this.files.name, {
-                    type: this.files.type
+                return new File([u8arr], fileName, {
+                    type:"image/jpeg"
                 })
             },
             // 提交图片到后端
-            postImg(base64) {
-                let file = this.dataURLtoFile(base64)
-                let formData = new window.FormData()
+            postImg(base64,type,fileName) {
+                let file = this.dataURLtoFile(base64,fileName)
+                let formData = new window.FormData();
                 console.log(file)
-                formData.append('file', file)
-                // 提交图片
-                this.uploadImg(formData,'lb')
-                // Some code
+                if(type=='lb'){//脸部图片
+                    this.HeadList.push(file)
+                    this.lbformData.append('files', file)
+                    if(this.Head.length==this.HeadList.length){//上传
+                        this.uploadImg(this.lbformData,'lb')
+                    }      
+                }else if(type=='cp'){//产品图片
+                    this.ProductList.push(file)
+                    this.cpformData.append('files', file)
+                    if(this.Product.length==this.ProductList.length){//上传
+                        this.uploadImg(this.cpformData,'cp')
+                    }
+                }
+                // let formData = new window.FormData()
+                // formData.append('files', file)
+                // console.log(formData)
+                // console.log(formData1)
+                // // 提交图片
+                // this.uploadImg(formData,'lb')
             },
             //脸部图片上传
             lbImgU(){
@@ -655,9 +661,10 @@
                     return false;
                 }
                 for(let i=0;i<this.Head.length;i++){
-                    formData.append('files', this.Head[i].file)
+                    this.imgPreview(this.Head[i].file,"lb")
+                    // formData.append('files', this.Head[i].file)
                 }
-                this.uploadImg(formData,"lb")
+                // this.uploadImg(formData,"lb")
             },
             //产品图片上传
             cpImgU(){
@@ -666,9 +673,10 @@
                     return false;
                 }
                 for(let i=0;i<this.Product.length;i++){
-                    formData.append('files', this.Product[i].file)
+                    // formData.append('files', this.Product[i].file)
+                    this.imgPreview(this.Product[i].file,"cp") 
                 }
-                this.uploadImg(formData,"cp")
+                // this.uploadImg(formData,"cp")
             },
             //确定上传图片
             uploadImg(data,type){

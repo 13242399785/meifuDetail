@@ -21,7 +21,7 @@ export default new Router({
       component:() => import('@/pages/404')
     },
     {
-      path: '/feedback/:id',
+      path: '/feedback/:id/:index',
       name: 'feedback',
       component:() => import('@/pages/feedback/feedback')
     },

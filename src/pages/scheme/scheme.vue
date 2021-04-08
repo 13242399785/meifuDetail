@@ -138,7 +138,7 @@
                 <img v-for="(item,index) in nowData.user.HeadList" :key="index" :src="$api.serverUrl+item" alt="">
                 <img v-for="(item,index) in nowData.user.Profile" :key="index" :src="$api.serverUrl+item" alt="">
                 <img v-for="(item,index) in nowData.user.Partial" :key="index" :src="$api.serverUrl+item" alt="">
-                <img v-for="(item,index) in nowData.user.Product" :key="index" :src="$api.serverUrl+item" alt="">
+                <img v-for="(item,index) in nowData.user.ProductList" :key="index" :src="$api.serverUrl+item" alt="">
                 
             </div>
         </div>

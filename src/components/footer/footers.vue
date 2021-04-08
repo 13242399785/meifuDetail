@@ -2,7 +2,7 @@
     <div class="footer-wapper">
         <van-tabbar v-model="active" safe-area-inset-bottom="true">
             <van-tabbar-item icon="todo-list-o" :to="{name:'scheme', params: {id:openId}}">我的方案</van-tabbar-item>
-            <van-tabbar-item icon="comment-o" :to="{name:'feedback', params: {id:pid}}">每周反馈</van-tabbar-item>
+            <van-tabbar-item icon="comment-o" :to="{name:'feedback', params: {id:pid,index:openId}}">每周反馈</van-tabbar-item>
         </van-tabbar>
     </div>
 </template>
@@ -18,7 +18,7 @@
         },
         watch:{
             "pid":function(){
-                console.log(this.pid)
+                // console.log(this.pid)
             },
             'openId':function(){
                 this.scheme='/scheme?jm='+this.openId
@@ -34,7 +34,6 @@
             }
             // this.p
             // this.feedback=this.feedback+this.pid
-            console.log(this.pid)
         }
     }
 </script>

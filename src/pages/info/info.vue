@@ -487,11 +487,12 @@
                     this.$api.tip('请先选择完整皮肤状况！')
                     return false;
                 } 
-                if(this.nowData.Gynecology==null&&parseInt(this.nowData.Gender)==1){
-                    this.$api.tip('请先选择完整皮肤状况！')
-                    return false;
-                }else{
+                if(parseInt(this.nowData.Gender)==1){
                     this.nowData.Gynecology='0'
+                }
+                if(this.nowData.Gynecology==null){
+                    this.$api.tip('请先选择备孕状况！')
+                    return false;
                 }
                 //上传图片
                 that.lbImgU();

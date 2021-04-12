@@ -140,23 +140,39 @@
             </template>
         </van-field>
         <!-- 有无高血压，糖尿病，甲状腺，肿瘤，病史 -->
-        <van-field name="radio" label="有无高血压，糖尿病，甲状腺，肿瘤，病史">
+        <!-- <van-field name="radio" label="有无高血压，糖尿病，甲状腺，肿瘤，病史">
             <template #input>
                 <van-radio-group v-model="nowData.Surgical" direction="horizontal">
                 <van-radio name="0">有</van-radio>
                 <van-radio name="1">无</van-radio>
                 </van-radio-group>
             </template>
-        </van-field>
+        </van-field> -->
+        <van-field
+            v-model="nowData.Surgical"
+            label="有无高血压，糖尿病，甲状腺，肿瘤，病史"
+             autosize
+            type="textarea"
+            placeholder="请填有无高血压，糖尿病，甲状腺，肿瘤，病史"
+            :rules="[{ required: true, message: '请填有无高血压，糖尿病，甲状腺，肿瘤，病史' }]"
+        />
         <!-- 有无焦虑，抑郁病史 -->
-        <van-field name="radio" label="有无焦虑，抑郁病史">
+        <!-- <van-field name="radio" label="有无焦虑，抑郁病史">
             <template #input>
                 <van-radio-group v-model="nowData.Psychiatry" direction="horizontal">
                 <van-radio name="0">有</van-radio>
                 <van-radio name="1">无</van-radio>
                 </van-radio-group>
             </template>
-        </van-field>
+        </van-field> -->
+        <van-field
+            v-model="nowData.Psychiatry"
+            label="有无焦虑，抑郁病史"
+             autosize
+            type="textarea"
+            placeholder="请填有无焦虑，抑郁病史"
+            :rules="[{ required: true, message: '请填有无焦虑，抑郁病史' }]"
+        />
         <!-- 是否处在备孕，孕中，哺乳期 -->
         <van-field v-if="nowData.Gender==1" name="radio" label="是否处在备孕，孕中，哺乳期史">
             <template #input>
@@ -442,8 +458,7 @@
                 this.ProductList=[]
                 this.HeadList=[]
                 this.lbformData=new window.FormData()
-                this.cpformData=new window.FormData()
-                
+                this.cpformData=new window.FormData()      
                 // this.uploadFiles(this.nowData.Head[0].file)
                 if(this.nowData.WXName==null){
                     this.$api.tip('请先填写称呼！')
@@ -479,19 +494,17 @@
                     this.nowData.Gynecology='0'
                 }
                 //上传图片
-                this.lbImgU();
-                this.cpImgU();
-                this.loadShow=true
+                that.lbImgU();
+                // this.cpImgU();
                 this.$api.updateUser(this.nowData).then(res=>{
-                    that.loadShow=false
                     if(res.data.Code==0){
-                        Dialog.alert({
-                            message: "信息填写成功！",
-                            theme: 'round-button',
-                            confirmButtonText:'立即付款'
-                        }).then(() => {
-                            window.location.href=that.buyUrl;
-                        });
+                        // Dialog.alert({
+                        //     message: "信息填写成功！",
+                        //     theme: 'round-button',
+                        //     confirmButtonText:'立即付款'
+                        // }).then(() => {
+                        //     window.location.href=that.buyUrl;
+                        // });
                     }else{
                         //错误
                         Dialog.alert({
@@ -539,7 +552,6 @@
             },
             // 处理图片
             imgPreview(file,photoType) {
-                console.log(file)
                 let self = this
                 // 看支持不支持FileReader
                 if (!file || !window.FileReader) return
@@ -611,7 +623,7 @@
                     ctx.drawImage(img, 0, 0, width, height)
                 }
                 //进行压缩
-                let ndata = canvas.toDataURL('image/jpeg', 0.8)
+                let ndata = canvas.toDataURL('image/jpeg', 1)
                 tCanvas.width = tCanvas.height = canvas.width = canvas.height = 0;
                 return ndata
             },
@@ -632,8 +644,6 @@
             // 提交图片到后端
             postImg(base64,type,fileName) {
                 let file = this.dataURLtoFile(base64,fileName)
-                let formData = new window.FormData();
-                console.log(file)
                 if(type=='lb'){//脸部图片
                     this.HeadList.push(file)
                     this.lbformData.append('files', file)
@@ -661,7 +671,7 @@
                     return false;
                 }
                 for(let i=0;i<this.Head.length;i++){
-                    this.imgPreview(this.Head[i].file,"lb")
+                    this.imgPreview(this.Head[i].file,"lb")//压缩处理图片
                     // formData.append('files', this.Head[i].file)
                 }
                 // this.uploadImg(formData,"lb")
@@ -674,18 +684,51 @@
                 }
                 for(let i=0;i<this.Product.length;i++){
                     // formData.append('files', this.Product[i].file)
-                    this.imgPreview(this.Product[i].file,"cp") 
+                    this.imgPreview(this.Product[i].file,"cp") //压缩处理图片
                 }
                 // this.uploadImg(formData,"cp")
             },
             //确定上传图片
             uploadImg(data,type){
-                let formData=data;
+                let formData=data,that=this;
                 let config={
                     headers:{"Content-Type":"multipart/form-data"}
                 }
+                this.loadShow=true
                 this.$axios.post(this.$api.serverUrl+'/api/Img/UpLoadImg'+'?openid='+this.$route.params.id+'&type='+type,formData,config).then(res=>{
-                    console.log(res)
+                    if(res.data&&type=='lb'){
+                        if(that.Product.length==0){//没有产品图片
+                            that.loadShow=false;
+                            Dialog.alert({
+                                message: "信息填写成功！",
+                                theme: 'round-button',
+                                confirmButtonText:'立即付款'
+                            }).then(() => {
+                                window.location.href=that.buyUrl;
+                            });
+                        }else{
+                            that.cpImgU();//上传产品图片
+                        }
+                    }else if(res.data&&type=='cp'){//产品图片上传成功
+                        that.loadShow=false;
+                        Dialog.alert({
+                            message: "信息填写成功！",
+                            theme: 'round-button',
+                            confirmButtonText:'立即付款'
+                        }).then(() => {
+                            window.location.href=that.buyUrl;
+                        });
+                    }else{
+                        that.$api.tip('图片上传不完整！')
+                        that.loadShow=false 
+                        Dialog.alert({
+                            message: "信息填写成功！",
+                            theme: 'round-button',
+                            confirmButtonText:'立即付款'
+                        }).then(() => {
+                            window.location.href=that.buyUrl;
+                        });
+                    }
                 })
             }
         }

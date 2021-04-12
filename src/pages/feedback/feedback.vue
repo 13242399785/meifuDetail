@@ -215,12 +215,19 @@
             },
             //确定上传图片
             uploadImg(data,type){
-                let formData=data;
+                let formData=data,that=this;
                 let config={
                     headers:{"Content-Type":"multipart/form-data"}
                 }
+                that.loadShow=true
                 this.$axios.post(this.$api.serverUrl+'/api/Img/UpLoadImg'+'?openid='+this.$route.params.index+'&type='+type+'&Programid='+this.$route.params.id,formData,config).then(res=>{
-                    console.log(res)
+                    if(res.data){
+                        that.$api.tip('反馈成功！') 
+                        setTimeout(function(){
+                            that.$router.go(-1);
+                        },1500)
+                    }
+                    that.loadShow=false
                 })
             },
             //提交反馈
@@ -253,16 +260,16 @@
                     this.$api.tip('请先填写反馈内容！')
                     return false;
                 }
-                this.lbImgU();
+                
                 this.loadShow=true;
                 this.$api.addFeedback(parsem).then(res=>{
                      that.loadShow=false
                      if(res.data.Code==0){
-                        
-                        that.$api.tip('反馈成功！') 
-                        setTimeout(function(){
-                            that.$router.go(-1);
-                        },1500)
+                         that.lbImgU();
+                        // that.$api.tip('反馈成功！') 
+                        // setTimeout(function(){
+                        //     that.$router.go(-1);
+                        // },1500)
                     }else{
                         //错误
                         Dialog.alert({

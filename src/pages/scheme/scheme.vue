@@ -7,8 +7,8 @@
             <div class="buy-list border-list border-bottom-none">
                 <h4>{{nowData.program.HFPtitle1}}</h4>
                 <div class="buy-item" v-for="(item,index) in nowData.program.ProductList" :key="index">
-                    <p class="buy-detail-w">【<span class="buy-detail">{{item.Typename}}</span>】{{item.Productname}}， <span class="buy-prise">官网售价{{item.Externalprice}}</span> 元</p>
-                    <p class="buy-wapper"><span v-if="item.Price">拼团{{item.Price}}元</span>，<span target="_blank"  class="buy-btn" @click="goUrl(item.BuyURL)">点击购买 >></span></p>
+                    <p class="buy-detail-w">【<span class="buy-detail">{{item.Typename}}</span>】{{item.Productname}}， <span class="buy-prise">官网售价{{item.Externalprice}}</span>元</p>
+                    <p @click="goUrl(item.BuyURL)" v-if="item.BuyURL" class="buy-wapper buy-btn"><span class="" v-if="item.Price">拼团{{item.Price}}元</span>，<span target="_blank"  class="buy-btn">点击购买 >></span></p>
                 </div>
             </div>
             <!-- <div class="buy-list-detail">
@@ -123,9 +123,11 @@
                 <p>【是否去医院诊断,诊断结论】&nbsp; {{nowData.user.Diagnosis}}</p>
                 <p>【期间用过药物，使用多久，效果】&nbsp; {{nowData.user.Useddrug}}</p>
                 <p>【对哪些药物和食物过敏】&nbsp; {{nowData.user.Allergen}}</p>
-                <p>【有无高血压，糖尿病，甲状腺，肿瘤，病史】&nbsp; {{nowData.user.Surgical?'无':'有'}}</p>
-                <p>【有无焦虑，抑郁病史】&nbsp; {{nowData.user.Psychiatry?'无':'有'}}</p>
-                <p v-if="parseInt(nowData.user.Gender)==1">【是否处在备孕，孕中，哺乳期】&nbsp; {{nowData.user.Gynecology?'没有':'是'}}</p>
+                <p>【有无高血压，糖尿病，甲状腺，肿瘤，青光眼等病史】&nbsp; {{nowData.user.Surgical}}</p>
+                <p>【有无焦虑，抑郁病史】&nbsp; {{nowData.user.Psychiatry}}</p>
+                <p v-if="parseInt(nowData.user.Gender)==1">【是否处在备孕，孕中，哺乳期】&nbsp; 
+                    {{nowData.user.Gynecology=='0'?'无':(nowData.user.Gynecology=='1'?'备孕':(nowData.user.Gynecology=='2'?'孕中':'哺乳期'))}}
+                </p>
                 <p>【用过哪些护肤品感觉挺好或还行】&nbsp; {{nowData.user.Feelgoode}}</p>
                 <p>【用过哪些护肤品感觉不好】&nbsp; {{nowData.user.Feelbad}}</p>
                 <p>【性别】&nbsp; {{nowData.user.Gender?'女':'男'}}</p>
@@ -135,12 +137,16 @@
                 <p>【是否使用彩妆】 &nbsp; {{nowData.user.Makeup?'否':'是'}}</p>
                 <p>【是否使用防晒】 &nbsp; {{nowData.user.Sunprotection?'否':'是'}}</p>
                 <p>【其他】&nbsp; {{nowData.user.Remarks}}</p>
-                <img v-for="(item,index) in nowData.user.HeadList" :key="index" :src="$api.serverUrl+item" alt="">
-                <img v-for="(item,index) in nowData.user.Profile" :key="index" :src="$api.serverUrl+item" alt="">
-                <img v-for="(item,index) in nowData.user.Partial" :key="index" :src="$api.serverUrl+item" alt="">
-                <img v-for="(item,index) in nowData.user.ProductList" :key="index" :src="$api.serverUrl+item" alt="">
-                
+                <div class="img-list">
+                    <img class="tranRo" v-for="(item,index) in nowData.user.HeadList" :key="index" :src="$api.serverUrl+item" alt="">
+                    <img class="tranRo" v-for="(item,index) in nowData.user.Profile" :key="index" :src="$api.serverUrl+item" alt="">
+                    <img class="tranRo" v-for="(item,index) in nowData.user.Partial" :key="index" :src="$api.serverUrl+item" alt="">
+                    <img class="tranRo" v-for="(item,index) in nowData.user.ProductList" :key="index" :src="$api.serverUrl+item" alt="">
+                </div>
             </div>
+        </div>
+        <div class="mianze">
+            《免责声明》
         </div>
         <footers :pid="programId" :openId="nowOpenid" v-show="footerShow"></footers>
     </div>
@@ -297,10 +303,7 @@
             text-align: center;
             margin: 0.14rem 0;
         }
-        .buy-wapper{
-            margin-bottom: 0.06rem;
-            margin-top: 0.02rem;
-        }
+        
         .buy-detail-w{
             vertical-align: middle;
             justify-content: space-between;
@@ -344,7 +347,12 @@
                     background: #055bd9;
                     padding: 2px 8px;
                     border-radius: 8px;
-                    text-decoration: underline
+                    // text-decoration: underline
+            }
+            .buy-wapper{
+                margin-bottom: 0.06rem;
+                margin-top: 0.02rem;
+                // text-decoration: underline
             }
             
         }
@@ -354,8 +362,10 @@
         .buy-item{
 
         }
+        .tranRo{
+            // transform: rotate(90deg);
+        }
         .mar-list{
-            
             p{
                 line-height: 0.2rem;
                 margin-bottom: 0.1rem;
@@ -372,13 +382,7 @@
         p{
             justify-content: space-between;
         }
-        .van-tabbar-item{
-            color:$zhu_cl
-        }
-        .van-tabbar-item--active{
-            color: #fff;
-            background: $zhu_cl
-        }
+        
         
     }
     @keyframes tranFalsh

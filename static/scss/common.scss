@@ -101,7 +101,7 @@ body,html{
     line-height: 16px;
 }
 .btn-commit{
-    margin:0.25rem 0.18rem 0.5rem 0.18rem
+    margin:0.25rem 0.18rem 0.18rem 0.18rem
 }
 // swipe
 .van-swipe {
@@ -250,4 +250,17 @@ body,html{
         transform: translate(-50%,-50%);
         text-align: center;
     }
+}
+.van-tabbar-item{
+  color:$zhu_cl
+}
+.van-tabbar-item--active{
+  color: #fff;
+  background: $zhu_cl
+}
+.mianze{
+  text-align: center;
+  color: #aba7a7;
+  padding: 20px 0;
+  font-size: 0.12rem;
 }

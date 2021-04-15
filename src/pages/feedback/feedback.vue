@@ -9,7 +9,7 @@
             </template>
         </van-field>
         <!-- <h2 class="van-doc-demo-block__title">反馈内容</h2> -->
-        <van-field name="radio" label="反馈感受">
+        <van-field name="radio" label="最近1周干油情况">
             <template #input>
                 <van-radio-group v-model="nowData.Feedbackstate" direction="horizontal">
                     <van-radio class="margin-b" name="偏干">偏干</van-radio>
@@ -25,8 +25,8 @@
                 type="textarea"
                 autosize
                 max-height='200'
-                label="反馈内容"
-                placeholder="请填写您的反馈内容！"
+                label="最近1周皮肤感受"
+                placeholder="填写最近1周完整的皮肤感受，症状变化等等，越详细越好！"
             />
         </div>
          <h2 class="van-doc-demo-block__title" v-if="proList.length>0">产品是否使用完</h2>
@@ -34,25 +34,32 @@
         <van-field name="radio" :label="item.Productname" v-for="(item,index) in proList" :key="index">
             <template #input>
                 <van-radio-group v-model="item.Usage" direction="horizontal">
-                <van-radio name="0">已用完</van-radio>
-                <van-radio name="1">未用完</van-radio>
+                <van-radio name="0">快用完</van-radio>
+                <van-radio name="1">还有很多</van-radio>
                 </van-radio-group>
             </template>
         </van-field>
 
-        <div class="btn-commit">
+        <div class="btn-commit" >
             <van-button round block type="info" @click="commit">确认反馈</van-button>
+        </div>
+        <div class="mianze" style="padding-bottom:70px;">
+            《免责声明》
         </div>
         <div class="load-wapper" v-if="loadShow">
             <van-loading size="24px" color="#fff" >加载中...</van-loading>
         </div>
+        
+        <footers :pid="programId" :openId="nowOpenid" v-show="footerShow"></footers>
     </div>
 </template>
 <script>
     import { Dialog } from 'vant';
+    import footers from '@/components/footer/footers'
     import { Toast } from 'vant';//引入ui提示
+    import Exif from 'exif-js'
     export default{
-        
+        components:{footers},
         name:'home',
         props:['pid'],
         data(){
@@ -65,7 +72,10 @@
                 proList:[],
                 HeadList:[],
                 lbformData:new window.FormData(),
-                loadShow:false
+                loadShow:false,
+                programId:this.$route.params.id,
+                nowOpenid:this.$route.params.index,
+                footerShow:true
 
             }
         },
@@ -102,31 +112,36 @@
             imgPreview(file,photoType) {
                 // console.log(file)
                 let self = this
-                // 看支持不支持FileReader
-                if (!file || !window.FileReader) return
-                if (/^image/.test(file.type)) {
-                    // 创建一个reader
-                    let reader = new FileReader()
-                    // 将图片2将转成 base64 格式
-                    reader.readAsDataURL(file)
-                    // 读取成功后的回调
-                    reader.onloadend = function() {
-                    let result = this.result
-                    let img = new Image()
-                    img.src = result
-                    //判断图片是否大于1000K,不是就直接上传，反之压缩图片
-                    if (this.result.length <= 1000 * 1024) {
-                        // 上传图片
-                        self.postImg(this.result,photoType,file.name);
-                    } else {
-                        img.onload = function() {
-                            let data = self.compress(img)
+                let Orientation;
+                //去获取拍照时的信息，解决拍出来的照片旋转问题
+                Exif.getData(file, function () {
+                    Orientation = Exif.getTag(this, "Orientation");
+                    // 看支持不支持FileReader
+                    if (!file || !window.FileReader) return
+                    if (/^image/.test(file.type)) {
+                        // 创建一个reader
+                        let reader = new FileReader()
+                        // 将图片2将转成 base64 格式
+                        reader.readAsDataURL(file)
+                        // 读取成功后的回调
+                        reader.onloadend = function() {
+                        let result = this.result
+                        let img = new Image()
+                        img.src = result
+                        //判断图片是否大于1000K,不是就直接上传，反之压缩图片
+                        if (this.result.length <= 300 * 1024) {
                             // 上传图片
-                           self.postImg(data,photoType,file.name);
+                            self.postImg(this.result,photoType,file.name);
+                        } else {
+                            img.onload = function() {
+                                let data = self.compress(img,Orientation)
+                                // 上传图片
+                            self.postImg(data,photoType,file.name);
+                            }
+                        }
                         }
                     }
-                    }
-                }
+                });
             },
             // 压缩图片
             compress(img, Orientation) {
@@ -171,10 +186,75 @@
                 } else {
                     ctx.drawImage(img, 0, 0, width, height)
                 }
+                //修复ios上传图片的时候 被旋转的问题 
+                // if (Orientation != "" && Orientation != 1) {
+                //     switch (parseInt(Orientation)) {
+                //     case 6: //需要顺时针（向左）90度旋转
+                //         this.rotateImg(img, "left", canvas);
+                //         break;
+                //     case 8: //需要逆时针（向右）90度旋转
+                //         this.rotateImg(img, "right", canvas);
+                //         break;
+                //     case 3: //需要180度旋转
+                //         this.rotateImg(img, "right", canvas); //转两次
+                //         this.rotateImg(img, "right", canvas);
+                //         break;
+                //     }
+                // }
                 //进行压缩
-                let ndata = canvas.toDataURL('image/jpeg', 0.8)
+                let ndata = canvas.toDataURL('image/jpeg', 0.1)
                 tCanvas.width = tCanvas.height = canvas.width = canvas.height = 0;
                 return ndata
+            },
+            // 旋转图片
+            rotateImg(img, direction, canvas) {
+                //最小与最大旋转方向，图片旋转4次后回到原方向
+                const min_step = 0
+                const max_step = 3
+                if (img == null) return
+                //img的高度和宽度不能在img元素隐藏后获取，否则会出错
+                let height = img.height
+                let width = img.width
+                let step = 2
+                if (step == null) {
+                    step = min_step
+                }
+                if (direction == 'right') {
+                    step++
+                    //旋转到原位置，即超过最大值
+                    step > max_step && (step = min_step)
+                } else {
+                    step--
+                    step < min_step && (step = max_step)
+                }
+                //旋转角度以弧度值为参数
+                let degree = (step * 90 * Math.PI) / 180
+                let ctx = canvas.getContext('2d')
+                switch (step) {
+                    case 0:
+                    canvas.width = width
+                    canvas.height = height
+                    ctx.drawImage(img, 0, 0)
+                    break
+                    case 1:
+                    canvas.width = height
+                    canvas.height = width
+                    ctx.rotate(degree)
+                    ctx.drawImage(img, 0, -height)
+                    break
+                    case 2:
+                    canvas.width = width
+                    canvas.height = height
+                    ctx.rotate(degree)
+                    ctx.drawImage(img, -width, -height)
+                    break
+                    case 3:
+                    canvas.width = height
+                    canvas.height = width
+                    ctx.rotate(degree)
+                    ctx.drawImage(img, -width, 0)
+                    break
+                }
             },
             //将base64转换为文件
             dataURLtoFile(dataurl,fileName) {

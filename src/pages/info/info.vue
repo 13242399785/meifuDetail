@@ -49,24 +49,7 @@
             :rules="[{ required: true, message: '请填写职业名称' }]"
         />
         <h2 class="van-doc-demo-block__title">皮肤状况</h2>
-        <!-- 是否使用防晒 -->
-        <van-field name="radio" label="是否使用防晒">
-            <template #input>
-                <van-radio-group v-model="nowData.Sunprotection" direction="horizontal">
-                <van-radio name="0">是</van-radio>
-                <van-radio name="1">否</van-radio>
-                </van-radio-group>
-            </template>
-        </van-field>
-        <!-- 是否使用彩妆 -->
-        <van-field name="radio" label="是否使用彩妆">
-            <template #input>
-                <van-radio-group v-model="nowData.Makeup" direction="horizontal">
-                <van-radio name="0">是</van-radio>
-                <van-radio name="1">否</van-radio>
-                </van-radio-group>
-            </template>
-        </van-field> 
+        
         <!-- 是否发红 -->
         <van-field name="radio" label="是否发红">
             <template #input>
@@ -139,6 +122,24 @@
                 </van-radio-group>
             </template>
         </van-field>
+        <!-- 是否使用防晒 -->
+        <van-field name="radio" label="是否使用防晒">
+            <template #input>
+                <van-radio-group v-model="nowData.Sunprotection" direction="horizontal">
+                <van-radio name="0">是</van-radio>
+                <van-radio name="1">否</van-radio>
+                </van-radio-group>
+            </template>
+        </van-field>
+        <!-- 是否使用彩妆 -->
+        <van-field name="radio" label="是否使用彩妆">
+            <template #input>
+                <van-radio-group v-model="nowData.Makeup" direction="horizontal">
+                <van-radio name="0">是</van-radio>
+                <van-radio name="1">否</van-radio>
+                </van-radio-group>
+            </template>
+        </van-field> 
         <!-- 有无高血压，糖尿病，甲状腺，肿瘤，病史 -->
         <!-- <van-field name="radio" label="有无高血压，糖尿病，甲状腺，肿瘤，病史">
             <template #input>
@@ -148,13 +149,14 @@
                 </van-radio-group>
             </template>
         </van-field> -->
+        
         <van-field
             v-model="nowData.Surgical"
-            label="有无高血压，糖尿病，甲状腺，肿瘤，病史"
+            label="有无高血压，糖尿病，甲状腺，肿瘤，青光眼等病史"
              autosize
             type="textarea"
-            placeholder="请填有无高血压，糖尿病，甲状腺，肿瘤，病史"
-            :rules="[{ required: true, message: '请填有无高血压，糖尿病，甲状腺，肿瘤，病史' }]"
+            placeholder="请填有无高血压，糖尿病，甲状腺，肿瘤，青光眼等病史"
+            :rules="[{ required: true, message: '请填有无高血压，糖尿病，甲状腺，肿瘤，青光眼等病史' }]"
         />
         <!-- 有无焦虑，抑郁病史 -->
         <!-- <van-field name="radio" label="有无焦虑，抑郁病史">
@@ -301,11 +303,15 @@
         <div class="load-wapper" v-if="loadShow">
             <van-loading size="24px" color="#fff" >加载中...</van-loading>
         </div>
+        <div class="mianze">
+            《免责声明》
+        </div>
     </div>
 </template>
 <script>
     import { Dialog } from 'vant';
     import areaList from '@/api/area.js'
+    import Exif from 'exif-js'
     export default{
         data(){
             return{ 
@@ -458,7 +464,7 @@
                 this.ProductList=[]
                 this.HeadList=[]
                 this.lbformData=new window.FormData()
-                this.cpformData=new window.FormData()      
+                this.cpformData=new window.FormData()   
                 // this.uploadFiles(this.nowData.Head[0].file)
                 if(this.nowData.WXName==null){
                     this.$api.tip('请先填写称呼！')
@@ -487,7 +493,7 @@
                     this.$api.tip('请先选择完整皮肤状况！')
                     return false;
                 } 
-                if(parseInt(this.nowData.Gender)==1){
+                if(parseInt(this.nowData.Gender)==0){//男的默认无备孕
                     this.nowData.Gynecology='0'
                 }
                 if(this.nowData.Gynecology==null){
@@ -497,6 +503,7 @@
                 //上传图片
                 that.lbImgU();
                 // this.cpImgU();
+                //提交信息---需先上传图片确认完成
                 this.$api.updateUser(this.nowData).then(res=>{
                     if(res.data.Code==0){
                         // Dialog.alert({
@@ -535,50 +542,39 @@
                 this.files.type = file.type // 获取类型
                 // this.imgPreview(file.file)
             },
-            //多图上传
-            uploadImgs(){
-                let e=this.Head;
-                let formData = new window.FormData()
-                if(this.Head.length==0){
-                    return false;
-                }
-                for(let i=0;i<this.Head.length;i++){
-                    let img=this.imgPreview(this.Head[i].file)
-                    console.log(this.Head[i].file)
-                    // formData.append('files', this.Head[i].file)
-                    console.log(img)
-                }
-                // this.uploadImg(formData,"lb")
-                
-            },
             // 处理图片
             imgPreview(file,photoType) {
                 let self = this
-                // 看支持不支持FileReader
-                if (!file || !window.FileReader) return
-                if (/^image/.test(file.type)) {
-                    // 创建一个reader
-                    let reader = new FileReader()
-                    // 将图片2将转成 base64 格式
-                    reader.readAsDataURL(file)
-                    // 读取成功后的回调
-                    reader.onloadend = function() {
-                    let result = this.result
-                    let img = new Image()
-                    img.src = result
-                    //判断图片是否大于1000K,不是就直接上传，反之压缩图片
-                    if (this.result.length <= 1000 * 1024) {
-                        // 上传图片
-                        self.postImg(this.result,photoType,file.name);
-                    } else {
-                        img.onload = function() {
-                            let data = self.compress(img)
+                let Orientation;
+                //去获取拍照时的信息，解决拍出来的照片旋转问题
+                Exif.getData(file, function () {
+                    Orientation = Exif.getTag(this, "Orientation");
+                    // 看支持不支持FileReader
+                    if (!file || !window.FileReader) return
+                    if (/^image/.test(file.type)) {
+                        // 创建一个reader
+                        let reader = new FileReader()
+                        // 将图片2将转成 base64 格式
+                        reader.readAsDataURL(file)
+                        // 读取成功后的回调
+                        reader.onloadend = function() {
+                        let result = this.result
+                        let img = new Image()
+                        img.src = result
+                        //判断图片是否大于1000K,不是就直接上传，反之压缩图片
+                        if (this.result.length <=200 * 1024) {
                             // 上传图片
-                           self.postImg(data,photoType,file.name);
+                            self.postImg(this.result,photoType,file.name);
+                        } else {
+                            img.onload = function() {
+                                let data = self.compress(img,Orientation)
+                                // 上传图片
+                            self.postImg(data,photoType,file.name);
+                            }
+                        }
                         }
                     }
-                    }
-                }
+                });
             },
             // 压缩图片
             compress(img, Orientation) {
@@ -623,12 +619,76 @@
                 } else {
                     ctx.drawImage(img, 0, 0, width, height)
                 }
+                //修复ios上传图片的时候 被旋转的问题
+                // if (Orientation != "" && Orientation != 1) {
+                //     switch (parseInt(Orientation)) {
+                //     case 6: //需要顺时针（向左）90度旋转
+                //         this.rotateImg(img, "left", canvas);
+                //         break;
+                //     case 8: //需要逆时针（向右）90度旋转
+                //         this.rotateImg(img, "right", canvas);
+                //         break;
+                //     case 3: //需要180度旋转
+                //         this.rotateImg(img, "right", canvas); //转两次
+                //         this.rotateImg(img, "right", canvas);
+                //         break;
+                //     }
+                // }
                 //进行压缩
-                let ndata = canvas.toDataURL('image/jpeg', 1)
+                let ndata = canvas.toDataURL('image/jpeg', 0.1);
                 tCanvas.width = tCanvas.height = canvas.width = canvas.height = 0;
                 return ndata
             },
-            
+            // 旋转图片
+            rotateImg(img, direction, canvas) {
+                //最小与最大旋转方向，图片旋转4次后回到原方向
+                const min_step = 0
+                const max_step = 3
+                if (img == null) return
+                //img的高度和宽度不能在img元素隐藏后获取，否则会出错
+                let height = img.height
+                let width = img.width
+                let step = 2
+                if (step == null) {
+                    step = min_step
+                }
+                if (direction == 'right') {
+                    step++
+                    //旋转到原位置，即超过最大值
+                    step > max_step && (step = min_step)
+                } else {
+                    step--
+                    step < min_step && (step = max_step)
+                }
+                //旋转角度以弧度值为参数
+                let degree = (step * 90 * Math.PI) / 180
+                let ctx = canvas.getContext('2d')
+                switch (step) {
+                    case 0:
+                    canvas.width = width
+                    canvas.height = height
+                    ctx.drawImage(img, 0, 0)
+                    break
+                    case 1:
+                    canvas.width = height
+                    canvas.height = width
+                    ctx.rotate(degree)
+                    ctx.drawImage(img, 0, -height)
+                    break
+                    case 2:
+                    canvas.width = width
+                    canvas.height = height
+                    ctx.rotate(degree)
+                    ctx.drawImage(img, -width, -height)
+                    break
+                    case 3:
+                    canvas.width = height
+                    canvas.height = width
+                    ctx.rotate(degree)
+                    ctx.drawImage(img, -width, 0)
+                    break
+                }
+            },
             //将base64转换为文件
             dataURLtoFile(dataurl,fileName) {
                 var arr = dataurl.split(','),
@@ -658,36 +718,24 @@
                         this.uploadImg(this.cpformData,'cp')
                     }
                 }
-                // let formData = new window.FormData()
-                // formData.append('files', file)
-                // console.log(formData)
-                // console.log(formData1)
-                // // 提交图片
-                // this.uploadImg(formData,'lb')
             },
             //脸部图片上传
             lbImgU(){
-                let formData = new window.FormData()
                 if(this.Head.length==0){
                     return false;
                 }
                 for(let i=0;i<this.Head.length;i++){
                     this.imgPreview(this.Head[i].file,"lb")//压缩处理图片
-                    // formData.append('files', this.Head[i].file)
                 }
-                // this.uploadImg(formData,"lb")
             },
             //产品图片上传
             cpImgU(){
-                let formData = new window.FormData()
                 if(this.Product.length==0){
                     return false;
                 }
                 for(let i=0;i<this.Product.length;i++){
-                    // formData.append('files', this.Product[i].file)
                     this.imgPreview(this.Product[i].file,"cp") //压缩处理图片
                 }
-                // this.uploadImg(formData,"cp")
             },
             //确定上传图片
             uploadImg(data,type){

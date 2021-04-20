@@ -145,7 +145,7 @@
                 </div>
             </div>
         </div>
-        <div class="mianze">
+        <div class="mianze"  v-if="footerShow">
             《免责声明》
         </div>
         <footers :pid="programId" :openId="nowOpenid" v-show="footerShow"></footers>
@@ -218,35 +218,41 @@
                 this.$api.getOpenIdUser(params).then(res=>{
                     if(res.data.Code==0){
                         // let nowD=res.data.Data;
-                        let titleInfo=res.data.Data.Message;
+                        let titleInfo=res.data.Data.Message,
+                            userNow=res.data.Data.user;
+                            console.log(userNow)
                         if(titleInfo==0){
                             // 填写信息
                             that.footerShow=false;
                             if(res.data.Data.user){//已填写过信息
-                                // that.$router.push({name:'info', params:{ id: that.nowOpenid,index:0||res.data.Data.user.Id }})  
-                                that.footerShow=false;
-                                Dialog.alert({
-                                    message: "未付款",
-                                    theme: 'round-button',
-                                    confirmButtonText:'立即付款'
-                                    }).then(() => {
-                                        window.location.href=res.data.Data.url;
-                                    //    that.getList() 
-                                });
+                                that.$router.push({name:'info', params:{ id: that.nowOpenid,index:userNow.Id||0 }})  
+                                that.$api.tip('方案制定中...')
+                                // that.footerShow=false;
+                                // Dialog.alert({
+                                //     message: "未付款",
+                                //     theme: 'round-button',
+                                //     confirmButtonText:'立即付款'
+                                //     }).then(() => {
+                                //         window.location.href=res.data.Data.url;
+                                //     //    that.getList() 
+                                // });
                             }else{
                                 that.$router.push({name:'info', params:{ id: that.nowOpenid,index:0 }})  
                             }
                         }else if(titleInfo==1){
+                            
                             //已填写信息未付款
                             that.footerShow=false;
-                              Dialog.alert({
-                                message: "未付款",
-                                theme: 'round-button',
-                                confirmButtonText:'立即付款'
-                                }).then(() => {
-                                    window.location.href=res.data.Data.url;
-                                //    that.getList() 
-                            });
+                            that.$router.push({name:'info', params:{ id: that.nowOpenid,index:userNow.Id||0 }}) 
+                            that.$api.tip('方案制定中...')
+                            //   Dialog.alert({
+                            //     message: "未付款",
+                            //     theme: 'round-button',
+                            //     confirmButtonText:'立即付款'
+                            //     }).then(() => {
+                            //         window.location.href=res.data.Data.url;
+                            //     //    that.getList() 
+                            // });
                         }else if(titleInfo==2){
                             //显示方案
                             that.footerShow=true;
@@ -254,13 +260,15 @@
                             that.programId=res.data.Data.program.Id
                         }else if(titleInfo==3){//已付款方案制定中
                             that.footerShow=false;
-                            Dialog.alert({
-                                message: "方案制定中...",
-                                theme: 'round-button',
-                                confirmButtonText:'确定'
-                                }).then(() => {
-                                   that.getList() 
-                            });
+                            that.$router.push({name:'info', params:{ id: that.nowOpenid,index:userNow.Id||0 }})
+                            that.$api.tip('方案制定中...')
+                            // Dialog.alert({
+                            //     message: "方案制定中...",
+                            //     theme: 'round-button',
+                            //     confirmButtonText:'确定'
+                            //     }).then(() => {
+                            //        that.getList() 
+                            // });
                         }
                     }else{
                         //错误

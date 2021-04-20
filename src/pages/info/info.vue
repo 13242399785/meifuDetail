@@ -12,36 +12,37 @@
         <van-field
             name="呢称"
             label="呢称"
-            :disabled='nameDisa'
+            :disabled='nameDisa||userHave'
             v-model="nowData.WXName"
         />
         <!-- 性别 -->
         <van-field name="radio" label="性别">
             <template #input>
-                <van-radio-group v-model="nowData.Gender" direction="horizontal">
-                <van-radio name="0">男</van-radio>
-                <van-radio name="1">女</van-radio>
+                <van-radio-group v-model="nowData.Gender" :disabled='userHave' direction="horizontal">
+                <van-radio :name="0">男</van-radio>
+                <van-radio :name="1">女</van-radio>
                 </van-radio-group>
             </template>
         </van-field>
         <!-- 年龄 -->
-        <van-field name="stepper" label="年龄">
+        <van-field  name="stepper" label="年龄">
             <template #input>
-                <van-stepper  min="1" max="150" v-model="nowData.Age" />
+                <van-stepper  :disabled='userHave'  min="1" max="150" v-model="nowData.Age" />
             </template>
         </van-field>
         <!-- 城市 -->
-        <van-field
+        <van-field  :disabled='userHave'
+            readonly
+            clickable
             v-model="nowData.City"
             name="城市"
             label="城市"
             @click="showPopup"
-            disabled
             placeholder="请选择城市"
             :rules="[{ required: true, message: '请填城市名称' }]"
         />
         <!-- 职业 -->
-        <van-field
+        <van-field  :disabled='userHave'
             v-model="nowData.Profession"
             name="职业"
             label="职业"
@@ -51,92 +52,92 @@
         <h2 class="van-doc-demo-block__title">皮肤状况</h2>
         
         <!-- 是否发红 -->
-        <van-field name="radio" label="是否发红">
+        <van-field name="radio" label="是否发红" >
             <template #input>
-                <van-radio-group v-model="nowData.Redness" direction="horizontal">
-                <van-radio name="0">是</van-radio>
-                <van-radio name="1">否</van-radio>
+                <van-radio-group  :disabled='userHave' v-model="nowData.Redness" direction="horizontal">
+                <van-radio :name="0">是</van-radio>
+                <van-radio :name="1">否</van-radio>
                 </van-radio-group>
             </template>
         </van-field>
         <!-- 是否发热发烫 -->
         <van-field name="radio" label="是否发热发烫">
             <template #input>
-                <van-radio-group v-model="nowData.Fever" direction="horizontal">
-                <van-radio name="0">是</van-radio>
-                <van-radio name="1">否</van-radio>
+                <van-radio-group  :disabled='userHave' v-model="nowData.Fever" direction="horizontal">
+                <van-radio :name="0">是</van-radio>
+                <van-radio :name="1">否</van-radio>
                 </van-radio-group>
             </template>
         </van-field>
         <!-- 是否会肿 -->
         <van-field name="radio" label="是否会肿">
             <template #input>
-                <van-radio-group v-model="nowData.Swelling" direction="horizontal">
-                <van-radio name="0">是</van-radio>
-                <van-radio name="1">否</van-radio>
+                <van-radio-group  :disabled='userHave' v-model="nowData.Swelling" direction="horizontal">
+                <van-radio :name="0">是</van-radio>
+                <van-radio :name="1">否</van-radio>
                 </van-radio-group>
             </template>
         </van-field>
         <!-- 是否会痒-->
         <van-field name="radio" label="是否会痒">
             <template #input>
-                <van-radio-group v-model="nowData.Itch" direction="horizontal">
-                <van-radio name="0">是</van-radio>
-                <van-radio name="1">否</van-radio>
+                <van-radio-group  :disabled='userHave' v-model="nowData.Itch" direction="horizontal">
+                <van-radio :name="0">是</van-radio>
+                <van-radio :name="1">否</van-radio>
                 </van-radio-group>
             </template>
         </van-field>
         <!-- 是否会刺痛 -->
         <van-field name="radio" label="是否会刺痛">
             <template #input>
-                <van-radio-group v-model="nowData.Tingling" direction="horizontal">
-                <van-radio name="0">是</van-radio>
-                <van-radio name="1">否</van-radio>
+                <van-radio-group  :disabled='userHave' v-model="nowData.Tingling" direction="horizontal">
+                <van-radio :name="0">是</van-radio>
+                <van-radio :name="1">否</van-radio>
                 </van-radio-group>
             </template>
         </van-field>
         <!-- 是否会干燥 -->
         <van-field name="radio" label="是否会干燥">
             <template #input>
-                <van-radio-group v-model="nowData.Dry" direction="horizontal">
-                <van-radio name="0">是</van-radio>
-                <van-radio name="1">否</van-radio>
+                <van-radio-group :disabled='userHave' v-model="nowData.Dry" direction="horizontal">
+                <van-radio :name="0">是</van-radio>
+                <van-radio :name="1">否</van-radio>
                 </van-radio-group>
             </template>
         </van-field>
         <!-- 是否出油 -->
         <van-field name="radio" label="是否出油">
             <template #input>
-                <van-radio-group v-model="nowData.Oil" direction="horizontal">
-                <van-radio name="0">是</van-radio>
-                <van-radio name="1">否</van-radio>
+                <van-radio-group :disabled='userHave' v-model="nowData.Oil" direction="horizontal">
+                <van-radio :name="0">是</van-radio>
+                <van-radio :name="1">否</van-radio>
                 </van-radio-group>
             </template>
         </van-field>
         <!-- 是否长痘 -->
         <van-field name="radio" label="是否长痘">
             <template #input>
-                <van-radio-group v-model="nowData.Acne" direction="horizontal">
-                <van-radio name="0">是</van-radio>
-                <van-radio name="1">否</van-radio>
+                <van-radio-group :disabled='userHave' v-model="nowData.Acne" direction="horizontal">
+                <van-radio :name="0">是</van-radio>
+                <van-radio :name="1">否</van-radio>
                 </van-radio-group>
             </template>
         </van-field>
         <!-- 是否使用防晒 -->
         <van-field name="radio" label="是否使用防晒">
             <template #input>
-                <van-radio-group v-model="nowData.Sunprotection" direction="horizontal">
-                <van-radio name="0">是</van-radio>
-                <van-radio name="1">否</van-radio>
+                <van-radio-group :disabled='userHave' v-model="nowData.Sunprotection" direction="horizontal">
+                <van-radio :name="0">是</van-radio>
+                <van-radio :name="1">否</van-radio>
                 </van-radio-group>
             </template>
         </van-field>
         <!-- 是否使用彩妆 -->
         <van-field name="radio" label="是否使用彩妆">
             <template #input>
-                <van-radio-group v-model="nowData.Makeup" direction="horizontal">
-                <van-radio name="0">是</van-radio>
-                <van-radio name="1">否</van-radio>
+                <van-radio-group :disabled='userHave' v-model="nowData.Makeup" direction="horizontal">
+                <van-radio :name="0">是</van-radio>
+                <van-radio :name="1">否</van-radio>
                 </van-radio-group>
             </template>
         </van-field> 
@@ -150,7 +151,7 @@
             </template>
         </van-field> -->
         
-        <van-field
+        <van-field :disabled='userHave'
             v-model="nowData.Surgical"
             label="有无高血压，糖尿病，甲状腺，肿瘤，青光眼等病史"
              autosize
@@ -167,7 +168,7 @@
                 </van-radio-group>
             </template>
         </van-field> -->
-        <van-field
+        <van-field :disabled='userHave'
             v-model="nowData.Psychiatry"
             label="有无焦虑，抑郁病史"
              autosize
@@ -178,18 +179,18 @@
         <!-- 是否处在备孕，孕中，哺乳期 -->
         <van-field v-if="nowData.Gender==1" name="radio" label="是否处在备孕，孕中，哺乳期史">
             <template #input>
-                <van-radio-group v-model="nowData.Gynecology" direction="horizontal">
+                <van-radio-group :disabled='userHave' v-model="nowData.Gynecology" direction="horizontal">
                     <div class="mar-b">
-                         <van-radio name="0">无</van-radio>
+                         <van-radio :name="0">无</van-radio>
                     </div>
                     <div class="mar-b">
-                        <van-radio name="1">备孕</van-radio>
+                        <van-radio :name="1">备孕</van-radio>
                     </div>
                      <div class="mar-b">
-                        <van-radio name="2">孕中</van-radio>
+                        <van-radio :name="2">孕中</van-radio>
                     </div>
                      <div>
-                        <van-radio name="3">哺乳期</van-radio>
+                        <van-radio :name="3">哺乳期</van-radio>
                     </div> 
                 </van-radio-group>
             </template>
@@ -197,7 +198,7 @@
 
         <h2 class="van-doc-demo-block__title">自我评测</h2>
         <!-- 症状多久发作一次 -->
-        <van-field
+        <van-field :disabled='userHave'
             v-model="nowData.Symptom"
             label="症状多久发作一次"
             autosize
@@ -206,7 +207,7 @@
             :rules="[{ required: true, message: '请填写症状多久发作一次' }]"
         />
         <!-- 皮肤问题几年了 -->
-        <van-field
+        <van-field :disabled='userHave'
             v-model="nowData.Skinproblems"
             label="皮肤问题几年了"
              autosize
@@ -215,7 +216,7 @@
             :rules="[{ required: true, message: '请填写皮肤问题几年了' }]"
         />
         <!-- 是否去医院诊断,诊断结论 -->
-        <van-field
+        <van-field :disabled='userHave'
             v-model="nowData.Diagnosis"
             label="是否去医院诊断,诊断结论"
              autosize
@@ -224,7 +225,7 @@
             :rules="[{ required: true, message: '请填写是否去医院诊断,诊断结论' }]"
         />
         <!-- 期间用过药物，使用多久，效果 -->
-        <van-field
+        <van-field :disabled='userHave'
             v-model="nowData.Useddrug"
              autosize
             type="textarea"
@@ -233,7 +234,7 @@
             :rules="[{ required: true, message: '请填写期间用过药物，使用多久，效果' }]"
         />
         <!-- 对哪些药物和食物过敏 -->
-        <van-field
+        <van-field :disabled='userHave'
             v-model="nowData.Allergen"
              autosize
             type="textarea"
@@ -242,7 +243,7 @@
             :rules="[{ required: true, message: '请填写对哪些药物和食物过敏' }]"
         />
         <!-- 用过哪些护肤品感觉挺好或还行 -->
-        <van-field
+        <van-field :disabled='userHave'
             v-model="nowData.Feelgoode"
              autosize
             type="textarea"
@@ -251,7 +252,7 @@
             :rules="[{ required: true, message: '请填写用过哪些护肤品感觉挺好或还行' }]"
         />
         <!-- 用过哪些护用过哪些护肤品感觉不好肤品感觉挺好或还行 -->
-        <van-field
+        <van-field :disabled='userHave'
             v-model="nowData.Feelbad"
              autosize
             type="textarea"
@@ -263,7 +264,7 @@
         <h2 class="van-doc-demo-block__title">当前状况</h2>
         <van-field name="uploader" label="脸部图片">
             <template #input>
-                <van-uploader multiple='true'  v-model="Head"  accept="image/*"/>
+                <van-uploader :disabled='userHave' multiple='true'  v-model="Head"  accept="image/*"/>
             </template>
         </van-field>
         <!-- <van-field name="uploader" label="侧脸图片">
@@ -278,14 +279,14 @@
         </van-field> -->
         <van-field name="uploader" label="当前产品图片">
             <template #input>
-                <van-uploader  multiple='true'  v-model="Product"  accept="image/*" />
+                <van-uploader :disabled='userHave' multiple='true'  v-model="Product"  accept="image/*" />
             </template>
         </van-field>
         <!-- <van-button round block type="info" @click="uploadImgs">上传图片</van-button> -->
         <!-- 备注其他 -->
         <h2 class="van-doc-demo-block__title">其他信息</h2>
         <div style="line-height:24px;">
-            <van-field
+            <van-field :disabled='userHave'
                 v-model="nowData.Remarks"
                 type="textarea"
                 autosize
@@ -294,11 +295,12 @@
             />
         </div>
         <!-- 地区弹窗 -->
-        <van-popup round  v-model="show" position="bottom" >
+        <van-popup round :disabled='userHave'  v-model="show" position="bottom" >
             <van-area title="选择地区" :area-list="areaLists" :columns-num="2" @cancel='cancelArea' @confirm='chooseArea' @change='changeArea'/>
         </van-popup>
         <div class="btn-commit">
-            <van-button round block type="info" @click="commit">提交</van-button>
+            <van-button v-show="!userHave" round block type="info" @click="commit">提交</van-button>
+            <van-button v-show="userHave" round block type="warning"  @click="showD">方案定制中....</van-button>
         </div>
         <div class="load-wapper" v-if="loadShow">
             <van-loading size="24px" color="#fff" >加载中...</van-loading>
@@ -337,8 +339,8 @@
                     "Dry":null,
                     "Oil":null,
                     "Acne":null,
-                    "Surgical":null,
-                    "Psychiatry":null,
+                    "Surgical":"",
+                    "Psychiatry":"",
                     "Gynecology":null,
                     "Symptom":'',
                     "Skinproblems":'',
@@ -364,7 +366,8 @@
                 HeadList:[],
                 lbformData:new window.FormData(),
                 cpformData:new window.FormData(),
-                loadShow:false
+                loadShow:false,
+                userHave:false
             }
         },
         mounted(){
@@ -389,10 +392,14 @@
                 this.$api.getOpenIdUser(params).then(res=>{
                     if(res.data.Code==0){
                         // let nowD=res.data.Data;
-                        let titleInfo=res.data.Data.Message;
+                        let titleInfo=res.data.Data.Message,
+                            userNow=res.data.Data.user,
+                            host = location.host; 
+                            that.Head=[]
+                            that.Product=[]
                         if(titleInfo==0){
                             //需要填写信息
-                            if(res.data.Data.user){//已填写过信息
+                            if(userNow){//已填写过信息
                                 Dialog.alert({
                                     message: "未付款",
                                     theme: 'round-button',
@@ -405,13 +412,34 @@
                                  
                             }
                             that.buyUrl=res.data.Data.url;
-                        }else{
+                        }else if(titleInfo==2){//已有方案
                             //跳转方案页面判断
                             that.$router.push({name:'scheme', params:{ id: that.nowData.Openid}})
+                        }else{
+                            that.nowData=userNow;
+                            that.userHave=true;//不可选状态
+                            if(userNow.HeadList.length>0){ 
+                                for(let i=0;i<userNow.HeadList.length;i++){
+                                    that.Head.push({url:'http://'+host+userNow.HeadList[i]})
+                                }
+                            }
+                            if(!userNow.ProductList){
+                                for(let i=0;i<userNow.Product.length;i++){
+                                    that.Product.push({url:'http://'+host+userNow.ProductList[i]})
+                                }
+                            }
+                            
                         }
                     }else{
                         //没有用户
-                        that.$router.push({name:'scheme', params:{ id: that.nowData.Openid}})
+                        Dialog.alert({
+                            message: '当前链接用户不存在，请先创建用户！',
+                            theme: 'round-button',
+                            }).then(() => {
+                            // on close
+                            that.getList()
+                        });
+                        // that.$router.push({name:'scheme', params:{ id: that.nowData.Openid}})
                     }
                 }).catch((error) => {
                     console.error(error);
@@ -441,12 +469,6 @@
                     window.history.pushState({},0, _url)//地址重置不刷新
                     this.$axios.get(`${this.$api.serverUrl}/api/User/getWXUserInfo?code=${theRequest.code}&redirect_uri=${_url}`).then((res)=>{
                         that.nowData.WXName=res.data.Data.nickname;//微信名称
-                        // Dialog.alert({
-                        //         message: JSON.stringify(res),
-                        //         theme: 'round-button',
-                        //         }).then(() => {
-                        //         // on close
-                        // });
                     }); 
                 }
             },
@@ -465,7 +487,7 @@
                 this.HeadList=[]
                 this.lbformData=new window.FormData()
                 this.cpformData=new window.FormData()   
-                // this.uploadFiles(this.nowData.Head[0].file)
+                // that.lbImgU();
                 if(this.nowData.WXName==null){
                     this.$api.tip('请先填写称呼！')
                     return false;
@@ -482,6 +504,10 @@
                     this.$api.tip('请先填写您的职业！')
                     return false;
                 } 
+                if(this.nowData.Surgical==''){
+                    this.$api.tip('请先填写您的职业！')
+                    return false;
+                }
                 if(this.nowData.Makeup==null||
                     this.nowData.Sunprotection==null||
                     this.nowData.Redness==null||
@@ -489,7 +515,7 @@
                     this.nowData.Itch==null||
                     this.nowData.Tingling==null||
                     this.nowData.Dry==null||this.nowData.Oil==null||
-                    this.nowData.Acne==null||this.nowData.Surgical==null||this.nowData.Psychiatry==null){
+                    this.nowData.Acne==null||this.nowData.Surgical==""||this.nowData.Psychiatry==""){
                     this.$api.tip('请先选择完整皮肤状况！')
                     return false;
                 } 
@@ -500,12 +526,23 @@
                     this.$api.tip('请先选择备孕状况！')
                     return false;
                 }
-                //上传图片
-                that.lbImgU();
                 // this.cpImgU();
                 //提交信息---需先上传图片确认完成
                 this.$api.updateUser(this.nowData).then(res=>{
-                    if(res.data.Code==0){
+                    if(res.data.Code==0){//成功提交
+                        if(res.data.Data.text=='已占用'){
+                            that.$api.tip('当前链接已被占用！')
+                            that.getOpenIdUser()//获取用户信息
+                            return false
+                        }
+                        if(that.Head.length==0&&that.Product.length){//没有选择图片上传直接显示
+                            that.$api.tip('信息提交成功！')
+                            that.getOpenIdUser()
+                        }else if(that.Head.length==0&&that.Product.length>0){//只有产品图只上传产品图
+                            that.cpImgU();
+                        }else{//先上传脸图片
+                            that.lbImgU();
+                        }
                         // Dialog.alert({
                         //     message: "信息填写成功！",
                         //     theme: 'round-button',
@@ -536,7 +573,7 @@
             cancelArea(e){
                 this.show = false;
             },
-            // 组件方法 获取 流
+            // 组件方法 获 流
             afterRead(file) {
                 this.files.name = file.name // 获取文件名
                 this.files.type = file.type // 获取类型
@@ -575,6 +612,25 @@
                         }
                     }
                 });
+            },
+            getBase64Image (url) {
+                var that = this
+                var image = new Image()
+                image.src = url + '?v=' + Math.random() // 处理缓存
+                image.crossOrigin = '*' // 支持跨域图片
+                image.onload = function () {
+                    var base64 = that.drawBase64Image(image)
+                    return base64
+                }
+            },
+            drawBase64Image (img) {
+                var canvas = document.createElement('base64Canvas')
+                canvas.width = img.width
+                canvas.height = img.height
+                var ctx = canvas.getContext('2d')
+                ctx.drawImage(img, 0, 0, img.width, img.height)
+                var dataURL = canvas.toDataURL('image/png')
+                return dataURL
             },
             // 压缩图片
             compress(img, Orientation) {
@@ -748,37 +804,32 @@
                     if(res.data&&type=='lb'){
                         if(that.Product.length==0){//没有产品图片
                             that.loadShow=false;
-                            Dialog.alert({
-                                message: "信息填写成功！",
-                                theme: 'round-button',
-                                confirmButtonText:'立即付款'
-                            }).then(() => {
-                                window.location.href=that.buyUrl;
-                            });
+                            that.$api.tip('信息提交成功！')
+                            that.getOpenIdUser()
+                            // Dialog.alert({
+                            //     message: "信息填写成功！",
+                            //     theme: 'round-button',
+                            //     confirmButtonText:'立即付款'
+                            // }).then(() => {
+                            //     window.location.href=that.buyUrl;
+                            // });
                         }else{
                             that.cpImgU();//上传产品图片
                         }
                     }else if(res.data&&type=='cp'){//产品图片上传成功
                         that.loadShow=false;
-                        Dialog.alert({
-                            message: "信息填写成功！",
-                            theme: 'round-button',
-                            confirmButtonText:'立即付款'
-                        }).then(() => {
-                            window.location.href=that.buyUrl;
-                        });
+                        that.$api.tip('信息提交成功！')
+                        that.getOpenIdUser()
                     }else{
                         that.$api.tip('图片上传不完整！')
                         that.loadShow=false 
-                        Dialog.alert({
-                            message: "信息填写成功！",
-                            theme: 'round-button',
-                            confirmButtonText:'立即付款'
-                        }).then(() => {
-                            window.location.href=that.buyUrl;
-                        });
+                   
                     }
                 })
+            },
+            showD(){
+                this.$api.tip('您已提交过信息，请耐心等待方案定制中....')
+                this.getOpenIdUser()
             }
         }
     }

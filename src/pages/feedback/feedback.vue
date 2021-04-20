@@ -312,7 +312,6 @@
             },
             //提交反馈
             commit(){
-                // this.lbImgU();
                 //初始化图片
                 this.HeadList=[];
                 this.lbformData=new window.FormData();
@@ -345,11 +344,14 @@
                 this.$api.addFeedback(parsem).then(res=>{
                      that.loadShow=false
                      if(res.data.Code==0){
-                         that.lbImgU();
-                        // that.$api.tip('反馈成功！') 
-                        // setTimeout(function(){
-                        //     that.$router.go(-1);
-                        // },1500)
+                        if(that.nowData.Head.length>0){
+                            that.lbImgU();
+                        }else{
+                            that.$api.tip('反馈成功！') 
+                            setTimeout(function(){
+                                that.$router.go(-1);
+                            },1500)
+                        }
                     }else{
                         //错误
                         Dialog.alert({

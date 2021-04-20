@@ -526,6 +526,10 @@
                     this.$api.tip('请先选择备孕状况！')
                     return false;
                 }
+                if(this.Head.length==0){
+                    this.$api.tip('请先上传脸部图片！')
+                    return false
+                }
                 // this.cpImgU();
                 //提交信息---需先上传图片确认完成
                 this.$api.updateUser(this.nowData).then(res=>{
@@ -535,14 +539,14 @@
                             that.getOpenIdUser()//获取用户信息
                             return false
                         }
-                        if(that.Head.length==0&&that.Product.length){//没有选择图片上传直接显示
-                            that.$api.tip('信息提交成功！')
-                            that.getOpenIdUser()
-                        }else if(that.Head.length==0&&that.Product.length>0){//只有产品图只上传产品图
-                            that.cpImgU();
-                        }else{//先上传脸图片
+                        // if(that.Head.length==0&&that.Product.length==0){//没有选择图片上传直接显示
+                        //     that.$api.tip('信息提交成功！')
+                        //     that.getOpenIdUser()
+                        // }else if(that.Head.length==0&&that.Product.length>0){//只有产品图只上传产品图
+                        //     that.cpImgU();
+                        // }else{//先上传脸图片
                             that.lbImgU();
-                        }
+                        // }
                         // Dialog.alert({
                         //     message: "信息填写成功！",
                         //     theme: 'round-button',
